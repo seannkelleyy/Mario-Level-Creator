@@ -29,6 +29,16 @@ export const LevelCreator = () => {
     ),
   });
 
+  const downloadLevel = () => {
+    const a = document.createElement("a");
+    const file = new Blob([JSON.stringify(level)], {
+      type: "application/json",
+    });
+    a.href = URL.createObjectURL(file);
+    a.download = "level.json";
+    a.click();
+  };
+
   const handleRowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (parseInt(e.target.value) < 1) {
       return setRows(1);
@@ -55,6 +65,7 @@ export const LevelCreator = () => {
           blocks are set to an air block. Simply click a block to change its
           type, keep clicking to cycle through all blocks
         </p>
+        <button onClick={downloadLevel}>Download Level</button>
         <label>Width in Blocks</label>
         <input type="number" value={rows} onChange={handleRowChange} />
       </section>
