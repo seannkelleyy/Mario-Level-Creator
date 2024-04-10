@@ -8,6 +8,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: visible;
 }
 
 .level-loader {
@@ -33,13 +34,14 @@
 
 .level {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .row {
   display: flex;
   flex-direction: column;
 }
+
 .block {
   display: flex;
   justify-content: center;

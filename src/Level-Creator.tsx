@@ -1,9 +1,50 @@
 import { useState } from "react";
-import { Row } from "./Row";
+import { Row } from "./components/Row";
 
 export const LevelCreator = () => {
   const [rows, setRows] = useState(10);
-  const [columns, setColumns] = useState(10);
+  const [dragging, setDragging] = useState(false);
+  const [nextBlockType, setNextBlockType] = useState<string>("");
+  const [level, setLevel] = useState({
+    level: "1",
+    song: "ground",
+    width: 16,
+    height: rows,
+    hero: {
+      type: "mario",
+      startingX: 0,
+      startingY: 0,
+      direction: true,
+      startingPower: "small",
+    },
+    enemies: [],
+    blockSections: [],
+    blocks: Array(rows).fill(
+      Array(16).fill({
+        type: "air",
+        item: "none",
+        collidable: false,
+        breakable: false,
+      })
+    ),
+  });
+
+  const handleRowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (parseInt(e.target.value) < 1) {
+      return setRows(1);
+    }
+    setRows(parseInt(e.target.value));
+  };
+
+  const onDragStart = (blockType: string) => {
+    setDragging(true);
+    setNextBlockType(blockType);
+  };
+
+  const onDragEnd = () => {
+    setDragging(false);
+    setNextBlockType("");
+  };
 
   return (
     <div className="level-loader">
@@ -15,18 +56,21 @@ export const LevelCreator = () => {
           type, keep clicking to cycle through all blocks
         </p>
         <label>Width in Blocks</label>
-        <input
-          type="number"
-          value={rows}
-          onChange={(e) => setRows(parseInt(e.target.value))}
-        />
+        <input type="number" value={rows} onChange={handleRowChange} />
       </section>
       <div className="level">
-        {Array(rows)
-          .fill(0)
-          .map((_, rowIndex) => (
-            <Row rowIndex={rowIndex} columns={columns} />
-          ))}
+        {rows &&
+          Array(rows)
+            .fill(0)
+            .map((_, rowIndex) => (
+              <Row
+                rowIndex={rowIndex}
+                dragging={dragging}
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+                nextBlockType={nextBlockType}
+              />
+            ))}
       </div>
     </div>
   );

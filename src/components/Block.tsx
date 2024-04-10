@@ -1,19 +1,47 @@
 import { useState } from "react";
 
-export const Block = () => {
-  const blockTypes = [
-    "air",
-    "ground",
-    "brick",
-    "square-brick",
-    "smooth-brick",
-    "question",
-    "pipe",
-    "pipe-top",
-  ];
+type BlockProps = {
+  dragging: boolean;
+  onDragStart: (blockType: string) => void;
+  onDragEnd: () => void;
+  nextBlockType: string;
+};
+
+export const blockTypes = [
+  "air",
+  "floor",
+  "brick",
+  "square-brick",
+  "smooth-brick",
+  "mystery",
+  "pipe",
+  "pipe-top",
+];
+
+export const Block = ({
+  dragging,
+  onDragStart,
+  onDragEnd,
+  nextBlockType,
+}: BlockProps) => {
   const [blockType, setBlockType] = useState(blockTypes[0]);
 
-  const handleClick = () => {
+  const handleMouseDown = () => {
+    changeBlockType();
+    onDragStart(blockType);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (dragging && e.buttons === 1) {
+      setBlockType(nextBlockType);
+    }
+  };
+
+  const handleMouseUp = () => {
+    onDragEnd();
+  };
+
+  const changeBlockType = () => {
     let currentIndex = blockTypes.indexOf(blockType);
     if (currentIndex === blockTypes.length - 1) {
       currentIndex = 0;
@@ -65,7 +93,12 @@ export const Block = () => {
   };
 
   return (
-    <button className="block" onClick={handleClick}>
+    <button
+      className="block"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
       {getBlockImage(blockType)}
     </button>
   );
